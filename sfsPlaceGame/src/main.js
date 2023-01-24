@@ -9,6 +9,8 @@ const LINE_SPACING = 32
 var width = 400 * LINE_SPACING;
 var height = 400 * LINE_SPACING;
 
+loadSprite("rect", "sprites/rect.png")
+
 var parts = []
 
 camScale(vec2(1, 1))
@@ -39,11 +41,8 @@ onKeyPressRepeat("d", () => {
 
 onMousePress("left", () => {
     var part = {}
-    part.name = "rect"
+    part.sprite = "rect"
     part.pos = toWorld(mousePos())
-    part.width = 4 * LINE_SPACING
-    part.height = 4 * LINE_SPACING
-    part.color = WHITE
     parts.push(part)
     console.log(parts)
 })
@@ -64,11 +63,17 @@ onDraw(() => {
     //     })
     // }
     for (let part of parts) {
-        drawRect({
-            width: part.width,
-            height: part.height,
-            pos: vec2(Math.round((part.pos.x - (part.width / 2)) / 32) * 32, Math.round((part.pos.y - (part.height / 2)) / 32) * 32),
-            color: part.color,
+        drawSprite({
+            sprite: "rect",
+            pos: vec2(Math.round(part.pos.x / 32) * 32, Math.round(part.pos.y / 32) * 32),
+            origin: "center"
         })
+        // drawRect({
+        //     width: part.width,
+        //     height: part.height,
+        //     pos: vec2(Math.round((part.pos.x - (part.width / 2)) / 32) * 32, Math.round((part.pos.y - (part.height / 2)) / 32) * 32),
+        //     color: part.color,
+        // })
     }
+
 })
