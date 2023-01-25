@@ -9,39 +9,32 @@ const LINE_SPACING = 32
 var width = 400 * LINE_SPACING;
 var height = 400 * LINE_SPACING;
 
-loadSprite("rect", "sprites/rect.png")
+loadSprite("rcs", "sprites/RCS.png")
 
 var parts = []
 
 camScale(vec2(1, 1))
 var playerPos = vec2(width / 2, height / 2)
-var playerSpeed = 32
+var playerSpeed = 16
 
-onKeyPressRepeat("w", () => {
+onKeyDown("w", () => {
     playerPos.y -= playerSpeed
 })
-onKeyPressRepeat("a", () => {
+onKeyDown("a", () => {
     playerPos.x -= playerSpeed
 })
-onKeyPressRepeat("s", () => {
+onKeyDown("s", () => {
     playerPos.y += playerSpeed
 })
-onKeyPressRepeat("d", () => {
+onKeyDown("d", () => {
     playerPos.x += playerSpeed
 })
 
-// onKeyPress("up", () => {
-// 	var scale = camScale()
-// 	camScale(vec2(scale.x + 0.5, scale.y + 0.5))
-// })
-// onKeyPress("down", () => {
-// 	var scale = camScale()
-// 	camScale(vec2(scale.x - 0.5, scale.y - 0.5))
-// })
-
 onMousePress("left", () => {
+    var mouseClickPos = toWorld(mousePos())
+    debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
     var part = {}
-    part.sprite = "rect"
+    part.sprite = "rcs"
     part.pos = toWorld(mousePos())
     parts.push(part)
     console.log(parts)
@@ -51,29 +44,24 @@ onDraw(() => {
     camPos(playerPos)
 
     drawGrid(k, width, height, LINE_SPACING)
-    // if (isMouseDown()) {
-    //     var mouseClickPos = toWorld(mousePos())
-    //     debug.log(Math.round(mouseClickPos.x / 32)+" "+Math.round(mouseClickPos.y / 32))
-    //     drawRect({
-    //         width: 4 * LINE_SPACING,
-    //         height: 8 * LINE_SPACING,
-    //         pos: vec2(Math.round(mouseClickPos.x / 32) * 32, Math.round(mouseClickPos.y / 32) * 32),
-    //         color: YELLOW,
-    //         outline: { color: BLACK, width: 4 },
-    //     })
-    // }
+
     for (let part of parts) {
         drawSprite({
-            sprite: "rect",
+            sprite: "rcs",
             pos: vec2(Math.round(part.pos.x / 32) * 32, Math.round(part.pos.y / 32) * 32),
             origin: "center"
         })
-        // drawRect({
-        //     width: part.width,
-        //     height: part.height,
-        //     pos: vec2(Math.round((part.pos.x - (part.width / 2)) / 32) * 32, Math.round((part.pos.y - (part.height / 2)) / 32) * 32),
-        //     color: part.color,
-        // })
     }
 
+    drawRect({
+        width: k.width() - 200,
+        height: 128,
+        pos: toWorld(vec2(k.width()/2, k.height()-128)),
+        opacity: 0.5,
+        radius: 16,
+        color: BLACK,
+        outline: { color: BLACK, width: 4 },
+        origin: "center"
+    })
+    
 })
