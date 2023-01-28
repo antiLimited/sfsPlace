@@ -1,5 +1,6 @@
 import kaboom from "kaboom"
 import { drawGrid } from "./grid";
+import { drawGui } from "./gui";
 
 const k = kaboom({
     background: [61, 98, 152]
@@ -33,11 +34,12 @@ onKeyDown("d", () => {
 onMousePress("left", () => {
     var mouseClickPos = toWorld(mousePos())
     debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
-    var part = {}
-    part.sprite = "rcs"
-    part.pos = toWorld(mousePos())
-    parts.push(part)
-    console.log(parts)
+    if (mousePos().y < k.height() - 128) {
+        var part = {}
+        part.sprite = "rcs"
+        part.pos = toWorld(mousePos())
+        parts.push(part)
+    }
 })
 
 onDraw(() => {
@@ -53,15 +55,5 @@ onDraw(() => {
         })
     }
 
-    drawRect({
-        width: k.width() - 200,
-        height: 128,
-        pos: toWorld(vec2(k.width()/2, k.height()-128)),
-        opacity: 0.5,
-        radius: 16,
-        color: BLACK,
-        outline: { color: BLACK, width: 4 },
-        origin: "center"
-    })
-    
+    drawGui(k)
 })

@@ -1,0 +1,16 @@
+{
+    "parts": [
+        {
+            "name": "RCS",
+            "sprite": "/sprites/RCS.png",
+            "width": 32,
+            "height": 32
+        },
+        {
+            "name": "RECT",
+            "sprite": "/sprites/rect.png",
+            "width": 128,
+            "height": 256
+        }
+    ]
+}
