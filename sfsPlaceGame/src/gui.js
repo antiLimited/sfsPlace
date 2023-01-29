@@ -14,6 +14,9 @@ async function getPartList() {
     }
 })();
 
+var partsPlaced = []
+var hoverPart = ""
+var selectPart = ""
 
 
 export function drawGui(k) {
@@ -22,9 +25,7 @@ export function drawGui(k) {
         height: 256,
         pos: toWorld(vec2(k.width() / 2, k.height())),
         opacity: 0.5,
-        //radius: 16,
         color: BLACK,
-        //outline: { color: BLACK, width: 4 },
         origin: "center"
     })
 
@@ -33,32 +34,69 @@ export function drawGui(k) {
     } else {
         var indent = 0
         for (let part of window.parts) {
+            var position = toWorld(vec2(((k.width() + 64) - k.width()) + (indent * 128), k.height() - 64))
+
             drawRect({
                 width: 96,
                 height: 96,
-                pos: toWorld(vec2(((k.width() + 64) - k.width()) + (indent * 128), k.height() - 64)),
+                pos: position,
                 opacity: 0.5,
                 radius: 16,
-                color: BLACK,
+                color: (() => {
+                    if (hoverPart == part.name) {
+                        return GREEN
+                    } else {
+                        return BLACK
+                    }
+                })(),
                 outline: { color: BLACK, width: 4 },
                 origin: "center"
             })
+
+            var rectPosition = toScreen(vec2(position.x - 48, position.y - 48))
+            if (testRectPoint(new Rect(rectPosition, vec2(rectPosition.x + 96, rectPosition.y + 96)), mousePos())) {
+                hoverPart = part.name
+                if (isMouseDown("left")) {
+                    selectPart = part.name
+                }
+            }
+
             if (part.width >= part.height) {
                 drawSprite({
                     sprite: part.name,
-                    pos: toWorld(vec2(((k.width() + 64) - k.width()) + (indent * 128), k.height() - 64)),
+                    pos: position,
                     width: 64,
                     origin: "center"
                 })
             } else if (part.width < part.height) {
                 drawSprite({
                     sprite: part.name,
-                    pos: toWorld(vec2(((k.width() + 64) - k.width()) + (indent * 128), k.height() - 64)),
+                    pos: position,
                     height: 64,
                     origin: "center"
                 })
             }
             indent += 1
         }
+    }
+}
+
+export function drawPlacedParts(k) {
+    if (isMousePressed("left")){
+        var mouseClickPos = toWorld(mousePos())
+        debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
+        if (mousePos().y < k.height() - 128 && selectPart != "") {
+            var part = {}
+            part.sprite = selectPart
+            part.pos = toWorld(mousePos())
+            partsPlaced.push(part)
+        }
+    }
+    for (let part of partsPlaced) {
+        drawSprite({
+            sprite: part.sprite,
+            pos: vec2(Math.round(part.pos.x / 32) * 32, Math.round(part.pos.y / 32) * 32),
+            origin: "center"
+        })
     }
 }
