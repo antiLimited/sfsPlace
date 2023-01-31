@@ -38,6 +38,7 @@ export function drawGui(k) {
         outline: { color: BLACK, width: 4 },
         origin: "center"
     })
+    
 
     drawText({
         text: "sfsPlace",
@@ -115,6 +116,16 @@ export function drawGui(k) {
             hoverPart = ""
         }
     }
+    
+    drawRect({
+        width: 192,
+        height: 192,
+        pos: toWorld(vec2(k.width() - 32, k.height() - 160)),
+        opacity: 0.8,
+        radius: 32,
+        color: GREEN,
+        origin: "botright"
+    })
 }
 
 export function drawPlacedParts(k) {
