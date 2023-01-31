@@ -83,8 +83,12 @@ export function drawGui(k) {
             var rectPosition = toScreen(vec2(position.x - 48, position.y - 48))
             if (testRectPoint(new Rect(rectPosition, vec2(rectPosition.x + 96, rectPosition.y + 96)), mousePos())) {
                 hoverPart = part.name
-                if (isMouseDown("left")) {
-                    selectPart = part.name
+                if (isMousePressed("left")) {
+                    if (selectPart == part.name) {
+                        selectPart = ""
+                    } else {
+                        selectPart = part.name
+                    }
                 }
             } else {
                 hoverCount += 1

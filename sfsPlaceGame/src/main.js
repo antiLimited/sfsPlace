@@ -29,9 +29,11 @@ onKeyDown("d", () => {
 
 var preFrameMousePos
 onMouseDown("left", () => {
-    var mouseChange = vec2(preFrameMousePos.x - mousePos().x, preFrameMousePos.y - mousePos().y)
-    debug.log(mouseChange)
-    playerPos = (vec2(camPos().x + mouseChange.x, camPos().y + mouseChange.y))
+    if (mousePos().y < k.height() - 128) {
+        var mouseChange = vec2(preFrameMousePos.x - mousePos().x, preFrameMousePos.y - mousePos().y)
+        debug.log(mouseChange)
+        playerPos = (vec2(camPos().x + mouseChange.x, camPos().y + mouseChange.y))
+    }
 })
 
 onDraw(() => {
