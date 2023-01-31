@@ -24,6 +24,7 @@ export function drawGui(k) {
         height: 256,
         pos: toWorld(vec2(k.width() / 2, k.height())),
         opacity: 0.5,
+        radius: 32,
         color: BLACK,
         origin: "center"
     })
@@ -118,13 +119,13 @@ export function drawGui(k) {
     }
     
     drawRect({
-        width: 192,
-        height: 192,
-        pos: toWorld(vec2(k.width() - 32, k.height() - 160)),
-        opacity: 0.8,
+        width: k.width() * 0.95,
+        height: 128,
+        pos: toWorld(vec2(k.width() / 2, k.height() - 192)),
+        opacity: 0.5,
         radius: 32,
-        color: GREEN,
-        origin: "botright"
+        color: BLACK,
+        origin: "center"
     })
 }
 
