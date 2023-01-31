@@ -27,9 +27,17 @@ onKeyDown("d", () => {
     playerPos.x += playerSpeed
 })
 
+var preFrameMousePos
+onMouseDown("left", () => {
+    var mouseChange = vec2(preFrameMousePos.x - mousePos().x, preFrameMousePos.y - mousePos().y)
+    debug.log(mouseChange)
+    playerPos = (vec2(camPos().x + mouseChange.x, camPos().y + mouseChange.y))
+})
+
 onDraw(() => {
     camPos(playerPos)
     drawGrid(k, width, height, LINE_SPACING)
     drawPlacedParts(k)
     drawGui(k)
+    preFrameMousePos = mousePos()
 })
