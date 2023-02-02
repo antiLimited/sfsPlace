@@ -18,6 +18,7 @@ var partsPlaced = []
 var hoverPart = ""
 var selectPart = ""
 
+
 export function drawGui(k) {
     drawRect({
         width: k.width(),
@@ -39,7 +40,7 @@ export function drawGui(k) {
         outline: { color: BLACK, width: 4 },
         origin: "center"
     })
-    
+
 
     drawText({
         text: "sfsPlace",
@@ -117,34 +118,109 @@ export function drawGui(k) {
             hoverPart = ""
         }
     }
-    
+
     drawRect({
         width: k.width() * 0.95,
         height: 128,
-        pos: toWorld(vec2(k.width() / 2, k.height() - 192)),
+        pos: toWorld(vec2(k.width() / 2, k.height() - 224)),
         opacity: 0.5,
         radius: 32,
         color: BLACK,
         origin: "center"
     })
+
+    var hoveringPlace
+    var rectPositionPlace = vec2(k.width() * 0.125, k.height() - 288)
+    if (testRectPoint(new Rect(rectPositionPlace, vec2(rectPositionPlace.x + k.width() / 2, rectPositionPlace.y + 96)), mousePos())) {
+        hoveringPlace = true
+    }
+    drawRect({
+        width: k.width() * 0.375,
+        height: 96,
+        pos: toWorld(vec2(k.width() * 0.25, k.height() - 224)),
+        opacity: (() => {
+            if (hoveringPlace == true) {
+                return 0.3
+            } else {
+                return 0.5
+            }
+        })(),
+        radius: 32,
+        color: GREEN,
+        outline: { color: BLACK, width: 4 },
+        origin: "center"
+    })
+    drawText({
+        text: "Place",
+        size: 64,
+        font: "sink",
+        width: k.width() / 2,
+        pos: toWorld(vec2(k.width() * 0.25, k.height() - 224)),
+        origin: "center",
+        color: BLACK,
+    })
+    drawText({
+        text: "5:00",
+        size: 64,
+        font: "sink",
+        width: k.width() / 2,
+        pos: toWorld(vec2(k.width() / 2, k.height() - 224)),
+        origin: "center",
+        color: WHITE,
+    })
+    drawRect({
+        width: 96,
+        height: 96,
+        pos: toWorld(vec2(k.width() * 0.95, k.height() - 224)),
+        opacity: (() => {
+            if (true) {
+                return 0.3
+            } else {
+                return 0.5
+            }
+        })(),
+        radius: 32,
+        color: BLACK,
+        outline: { color: BLACK, width: 4 },
+        origin: "center"
+    })
 }
+
+var placedPartSprite = "RCS"
+var placedPartPosX = 1
+var placedPartPosY = 1
+var placedPartRot = 0
+var placedPartScaleX = 1
+var placedPartScaleY = 1
 
 export function drawPlacedParts(k) {
     if (isMousePressed("left")) {
         var mouseClickPos = toWorld(mousePos())
         debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
         if (mousePos().y < k.height() - 128 && selectPart != "") {
-            var part = {}
-            part.sprite = selectPart
-            part.pos = toWorld(mousePos())
-            partsPlaced.push(part)
+            placedPartSprite = selectPart
+            placedPartPosX = toWorld(mousePos()).x
+            placedPartPosY = toWorld(mousePos()).y
+
+            // part.sprite = selectPart
+            // part.pos = toWorld(mousePos())
+            // partsPlaced.push(part)
+            // placedPart = part
         }
     }
-    for (let part of partsPlaced) {
-        drawSprite({
-            sprite: part.sprite,
-            pos: vec2(Math.round(part.pos.x / 32) * 32, Math.round(part.pos.y / 32) * 32),
-            origin: "center"
-        })
-    }
+    // if (selectPart != ""){
+    drawSprite({
+        sprite: placedPartSprite,
+        pos: vec2(Math.round(placedPartPosX / 32) * 32, Math.round(placedPartPosY / 32) * 32),
+        opacity: 0.5,
+        origin: "center"
+    })
+    // }
+    // for (let part of partsPlaced) {
+    //     drawSprite({
+    //         sprite: part.sprite,
+    //         pos: vec2(Math.round(part.pos.x / 32) * 32, Math.round(part.pos.y / 32) * 32),
+    //         origin: "center"
+    //     })
+    // }
 }
