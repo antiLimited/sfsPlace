@@ -17,6 +17,7 @@ import GetMapRoute from "./routes/api/getMap";
 import MapManager from "./db/Map";
 import MeRoute from "./routes/api/me";
 import DeletePartRoute from "./routes/api/deletePart";
+import SocketHandler from "./socket/SocketHandler";
 
 
 const app = new Koa();
@@ -61,6 +62,8 @@ app.use(ratelimit({
 }));
 
 
-app.listen(process.env.PORT || 3404, () => {
+let server = app.listen(process.env.PORT || 3404, () => {
     console.log("Started sfsPlace backend server");
-})
+});
+
+SocketHandler.listen(server);

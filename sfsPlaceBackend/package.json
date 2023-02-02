@@ -12,7 +12,8 @@
     "mongoose": "^6.9.0",
     "nodemailer": "^6.9.1",
     "tslog": "^4.7.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.12.0"
   },
   "devDependencies": {
     "@types/koa": "^2.13.5",
@@ -25,6 +26,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/nodemailer": "^6.4.7",
     "@types/uuid": "^9.0.0",
+    "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "eslint": "^8.33.0",
     "eslint-config-standard-with-typescript": "^34.0.0",

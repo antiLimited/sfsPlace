@@ -4,6 +4,7 @@ import ApiResponse from "../../models/ApiResponse";
 import MapManager, { placePartRequestSchema, IMapPart } from "../../db/Map";
 import Database from "../../db/Database";
 import { v4 as uuidv4 } from 'uuid';
+import SocketHandler, { SocketResponse } from "../../socket/SocketHandler";
 
 export default class PlacePartRoute implements ApiRoute {
     initRoutes(router: Router): void {
@@ -51,6 +52,14 @@ export default class PlacePartRoute implements ApiRoute {
                         user.save();
 
                         resp.message = "Placed part";
+
+                        let socketResponse = new SocketResponse();
+                        socketResponse.message = {
+                            op: "PART_PLACED",
+                            part: part
+                        };
+                        
+                        SocketHandler.broadcast(socketResponse);
                     }
                 }
             }

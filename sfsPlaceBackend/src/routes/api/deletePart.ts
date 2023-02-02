@@ -4,6 +4,7 @@ import ApiResponse from "../../models/ApiResponse";
 import MapManager, { placePartRequestSchema, IMapPart, deletePartRequestSchema } from "../../db/Map";
 import Database from "../../db/Database";
 import { v4 as uuidv4 } from 'uuid';
+import SocketHandler, { SocketResponse } from "../../socket/SocketHandler";
 
 export default class DeletePartRoute implements ApiRoute {
 
@@ -31,6 +32,17 @@ export default class DeletePartRoute implements ApiRoute {
                     await MapManager.deletePartWithId(validate.value.identifier);
 
                     resp.message = "Deleted part";
+
+
+
+                    let socketResponse = new SocketResponse();
+                    socketResponse.message = {
+                        op: "PART_DELETED",
+                        user: user.username,
+                        partId: validate.value.identifier
+                    };
+                    
+                    SocketHandler.broadcast(socketResponse);
                 }
             }
 
