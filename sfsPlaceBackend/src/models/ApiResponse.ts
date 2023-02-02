@@ -4,7 +4,7 @@ export class ApiErrorResponse {
 }
 
 export default class ApiResponse {
-    public message: string = "unknown message";
+    public message: any = "unknown message";
     public timestamp: number = Date.now();
     public error: ApiErrorResponse = new ApiErrorResponse();
 }

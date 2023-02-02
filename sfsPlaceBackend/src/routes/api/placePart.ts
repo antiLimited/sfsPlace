@@ -49,6 +49,8 @@ export default class PlacePartRoute implements ApiRoute {
                         
                         user.placedParts += 1;
                         user.save();
+
+                        resp.message = "Placed part";
                     }
                 }
             }

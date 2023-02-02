@@ -16,6 +16,7 @@ import PlacePartRoute from "./routes/api/placePart";
 import GetMapRoute from "./routes/api/getMap";
 import MapManager from "./db/Map";
 import MeRoute from "./routes/api/me";
+import DeletePartRoute from "./routes/api/deletePart";
 
 
 const app = new Koa();
@@ -27,7 +28,7 @@ MapManager.syncPartList();
 
 // Init request routes
 
-let routes = [new CreateAccountRoute(), new ValidateUserEmailRoute(), new UserLoginRoute(), new PlacePartRoute(), new GetMapRoute(), new MeRoute()];
+let routes = [new CreateAccountRoute(), new ValidateUserEmailRoute(), new UserLoginRoute(), new PlacePartRoute(), new GetMapRoute(), new MeRoute(), new DeletePartRoute()];
 
 for (let route of routes) {
     route.initRoutes(router);

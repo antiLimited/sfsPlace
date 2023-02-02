@@ -21,7 +21,7 @@ export interface IMapPart {
 export const mapPositionSchema = new Schema<IMapPosition>({
     x: { type: Number, required: true },
     y: { type: Number, required: true }
-}, { _id : false });
+}, { _id: false });
 
 export const partSchema = new Schema<IMapPart>({
     name: { type: String, required: true },
@@ -41,7 +41,12 @@ export const placePartRequestSchema = joi.object(({
     scale: joi.number().required(),
     rotation: joi.number().required(),
     texture: joi.string().required()
+}));
+
+export const deletePartRequestSchema = joi.object(({
+    identifier: joi.string().required()
 }))
+
 
 export const MapPart = model<IMapPart>('MapPart', partSchema);
 
@@ -50,15 +55,32 @@ export default class MapManager {
 
     private static log: Logger<String> = new Logger();
 
-    constructor(){
-        
+    constructor() {
+
     }
 
-    static getParts(){
+    static getParts() {
         return this.parts;
     }
 
-    static async addPart(part: IMapPart){
+    static async deletePartWithId(id: string) {
+        let p = await MapPart.findOneAndDelete({ identifier: id });
+
+        // remove item from parts array
+        if (p != undefined) {
+            let i = 0;
+            for (let part of this.parts){
+                if (part.identifier == id){
+                    this.log.info(`Removed part ${id} from db, and memory`);
+                    this.parts.splice(i, 1);
+                    break;
+                }
+                i++;
+            }
+        }
+    }
+
+    static async addPart(part: IMapPart) {
         this.parts.push(part);
 
         let mapPart = new MapPart({
@@ -78,8 +100,8 @@ export default class MapManager {
     }
 
     // Syncs parts from the mongo database -> server memory
-    static async syncPartList(){
-        let parts = await MapPart.find({ }, {_id :0, __v:0});
+    static async syncPartList() {
+        let parts = await MapPart.find({}, { _id: 0, __v: 0 });
 
         this.parts = parts;
 

@@ -14,12 +14,13 @@ export default class MeRoute implements ApiRoute {
                 resp.error.errorMessage = '"token" is required';
 
                 resp.message = "Failed to get current user";
-                ctx.body = resp;
             } else {
                 let users = await Database.authUserWithToken(token);
             
-                ctx.body = users[0];
+                resp.message = users[0];
             }
+
+            ctx.body = resp;
 
             await next();
         })
