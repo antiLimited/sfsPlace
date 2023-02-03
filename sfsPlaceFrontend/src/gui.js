@@ -130,8 +130,8 @@ export function drawGui(k) {
     })
 
     var hoveringPlace
-    var rectPositionPlace = vec2(k.width() * 0.125, k.height() - 288)
-    if (testRectPoint(new Rect(rectPositionPlace, vec2(rectPositionPlace.x + k.width() / 2, rectPositionPlace.y + 96)), mousePos())) {
+    var rectPositionPlace = vec2(k.width() * 0.0625, k.height() - 288)
+    if (testRectPoint(new Rect(rectPositionPlace, vec2(rectPositionPlace.x + k.width() * 0.375, rectPositionPlace.y + 96)), mousePos())) {
         hoveringPlace = true
     }
     drawRect({
