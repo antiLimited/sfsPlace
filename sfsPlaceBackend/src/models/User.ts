@@ -24,7 +24,7 @@ export const userRequestSchema = joi.object(({
         .min(3)
         .max(30).required(),
     email: joi.string().email().required(),
-    password: joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
+    password: joi.string().min(5).max(30).required()
 }))
 
 export const User = model<IUser>('User', userSchema);

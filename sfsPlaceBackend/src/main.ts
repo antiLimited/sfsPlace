@@ -5,7 +5,7 @@ import * as logger from "koa-logger";
 import * as json from "koa-json";
 import * as serve from "koa-static";
 import * as bodyParser from "koa-bodyparser";
-import * as ratelimit from "koa-ratelimit";
+import * as cors from "koa-cors";
 
 import CreateAccountRoute from "./routes/api/createAccount";
 import Database from "./db/Database";
@@ -40,27 +40,12 @@ app.use(logger());
 app.use(bodyParser());
 app.use(router.routes()).use(router.allowedMethods());
 app.use(serve("public"));
+app.use(cors());
 
 
 // rate limiting
 
 const db = new Map();
-
-app.use(ratelimit({
-    driver: 'memory',
-    db: db,
-    duration: 60000,
-    errorMessage: 'Sometimes You Just Have to Slow Down.',
-    id: (ctx) => ctx.ip,
-    headers: {
-        remaining: 'Rate-Limit-Remaining',
-        reset: 'Rate-Limit-Reset',
-        total: 'Rate-Limit-Total'
-    },
-    max: 100,
-    disableHeader: false,
-}));
-
 
 let server = app.listen(process.env.PORT || 3404, () => {
     console.log("Started sfsPlace backend server");

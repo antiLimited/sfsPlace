@@ -30,6 +30,11 @@ export class SocketResponse {
     }
 }
 
+export class SocketMessage {
+    public op: string;
+    public payload: any;
+};
+
 export class SocketClient {
     
     private clientSocket: WebSocket;
@@ -40,23 +45,33 @@ export class SocketClient {
             this.log.info("Client disconnected from server");
         });
 
-        // socket.on("message", (messageBuffer) => {
-        //     let messageString = messageBuffer.toString();
+        socket.on("message", (messageBuffer) => {
+            let messageString = messageBuffer.toString();
 
-        //     try {
-        //         let message = JSON.parse(messageString);
+            try {
+                let message = JSON.parse(messageString) as SocketMessage;
 
-        //     } catch (e) {
-        //         this.log.error(e);
+                if (message.op == "IDENTIFY") {
 
-        //         let error = new SocketErrorResponse();
-        //         error.errorMessage = (e as Error).message;
-        //         error.errorCode = 1;
-        //         this.sendMessage(SocketResponse.createResponse("Message processing failed", error).json());
-        //         return;
-        //     }
+                } else {
+                    let error = new SocketErrorResponse();
+                    error.errorMessage = "Expected valid op code";
+                    error.errorCode = 1;
 
-        // });
+                    this.sendMessage(SocketResponse.createResponse("Invalid op code", error).json());
+                }
+
+            } catch (e) {
+                this.log.error(e);
+
+                let error = new SocketErrorResponse();
+                error.errorMessage = (e as Error).message;
+                error.errorCode = 1;
+                this.sendMessage(SocketResponse.createResponse("Message processing failed", error).json());
+                return;
+            }
+
+        });
 
         this.clientSocket = socket;
     }

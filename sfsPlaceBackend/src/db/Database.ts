@@ -8,6 +8,11 @@ export class UserToken {
     public token: string
 };
 
+export class UserTimeout {
+    public userEmail: string;
+    public startTime: number;
+};
+
 
 export default class Database {
 
@@ -99,8 +104,17 @@ export default class Database {
 
         this.log.info("Connected to backend database");
     }
+
+    static updateTimeouts(){
+        let i = 0;
+
+        for (let timeout of this.timeouts){
+            let startDate = new Date(timeout.startTime);
+        }
+    }
     
 
     private static tokens: Array<UserToken> = new Array();
     private static emailTokens: Array<UserToken> = new Array();
+    private static timeouts: Array<UserTimeout> = new Array();
 }
