@@ -29,7 +29,7 @@ onKeyDown("d", () => {
 
 var preFrameMousePos
 onMouseDown("left", () => {
-    if (mousePos().y < k.height() - 128) {
+    if (mousePos().y < k.height() - 288) {
         var mouseChange = vec2(preFrameMousePos.x - mousePos().x, preFrameMousePos.y - mousePos().y)
         debug.log(mouseChange)
         playerPos = (vec2(camPos().x + mouseChange.x, camPos().y + mouseChange.y))
