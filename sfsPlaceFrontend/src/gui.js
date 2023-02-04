@@ -143,6 +143,7 @@ export function drawGui(k) {
         hoveringPlace = true
         if (isMousePressed()) {
             api.placePart(placedPartSprite, placedPartScaleX, placedPartRot, placedPartTexture, placedPartPosX, placedPartPosY)
+            
         }
     }
     drawRect({
@@ -217,12 +218,14 @@ export function drawPlacedParts(k) {
         }
     }
     // if (selectPart != ""){
-    drawSprite({
-        sprite: placedPartSprite,
-        pos: vec2(Math.round(placedPartPosX / 32) * 32, Math.round(placedPartPosY / 32) * 32),
-        opacity: 0.5,
-        origin: "center"
-    })
+    if (placedPartSprite != ""){
+        drawSprite({
+            sprite: placedPartSprite,
+            pos: vec2(Math.round(placedPartPosX / 32) * 32, Math.round(placedPartPosY / 32) * 32),
+            opacity: 0.5,
+            origin: "center"
+        })
+    }
     for (let part of window.placedParts) {
         drawSprite({
             sprite: part.name,
