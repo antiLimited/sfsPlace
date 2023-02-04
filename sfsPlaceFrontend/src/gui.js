@@ -143,7 +143,6 @@ export function drawGui(k) {
         hoveringPlace = true
         if (isMousePressed()) {
             api.placePart(placedPartSprite, placedPartScaleX, placedPartRot, placedPartTexture, placedPartPosX, placedPartPosY)
-            placed
         }
     }
     drawRect({

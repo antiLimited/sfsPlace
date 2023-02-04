@@ -1,4 +1,5 @@
 import kaboom from "kaboom"
+import * as api from "./api";
 import { drawGrid } from "./grid";
 import { drawGui, drawPlacedParts } from "./gui";
 
@@ -35,6 +36,8 @@ onMouseDown("left", () => {
         playerPos = (vec2(camPos().x + mouseChange.x, camPos().y + mouseChange.y))
     }
 })
+
+api.handleSocket();
 
 onDraw(() => {
     camPos(playerPos)

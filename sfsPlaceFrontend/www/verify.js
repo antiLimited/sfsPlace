@@ -13,6 +13,13 @@ var apiUrl = "http://localhost:3404";
                 token: emailCode
             })
         })
-        window.location.href = "/login.html"
+
+        let verifyJson = await verifyFetch.json();
+
+        if (verifyJson.error.errorCode != -1) {
+            alert(verifyJson.error.errorMessage);
+        } else {
+            window.location.href = "/login.html"
+        }
     }
 })();
