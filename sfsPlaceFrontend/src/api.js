@@ -38,7 +38,7 @@ export function handleSocket() {
         // TODO: handle stuff idk :)
 
         if (message.op == "TIMEOUT_UPDATE"){
-            // update timeout
+            window.placeTimer = message.payload
         } else if (message.op == "PART_PLACED") {
             let part = message.part;
 

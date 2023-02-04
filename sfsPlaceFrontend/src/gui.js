@@ -143,7 +143,7 @@ export function drawGui(k) {
         hoveringPlace = true
         if (isMousePressed()) {
             api.placePart(placedPartSprite, placedPartScaleX, placedPartRot, placedPartTexture, placedPartPosX, placedPartPosY)
-            
+
         }
     }
     drawRect({
@@ -171,15 +171,31 @@ export function drawGui(k) {
         origin: "center",
         color: BLACK,
     })
-    drawText({
-        text: "5:00",
-        size: 64,
-        font: "sink",
-        width: k.width() / 2,
-        pos: toWorld(vec2(k.width() / 2, k.height() - 224)),
-        origin: "center",
-        color: WHITE,
-    })
+    if (window.placeTimer != undefined) {
+        var minutes = 4 - window.placeTimer.sinceTimeout.minutes
+        var seconds = 60 - window.placeTimer.sinceTimeout.seconds
+        if (minutes < 0){
+            window.placeTimer = undefined
+        }
+
+        drawText({
+            text: (() => {
+                if (seconds == 60){
+                    seconds = "00"
+                    minutes += 1
+                } else if (seconds < 10){
+                    seconds = "0" + seconds
+                }
+                return minutes+":"+seconds
+            })(),
+            size: 64,
+            font: "sink",
+            width: k.width() / 2,
+            pos: toWorld(vec2(k.width() / 2, k.height() - 224)),
+            origin: "center",
+            color: WHITE,
+        })
+    }
     drawRect({
         width: 96,
         height: 96,
@@ -200,7 +216,7 @@ export function drawGui(k) {
 
 
 export function drawPlacedParts(k) {
-    if (window.placedParts == undefined){
+    if (window.placedParts == undefined) {
         return;
     }
     if (isMousePressed("left")) {
@@ -218,7 +234,7 @@ export function drawPlacedParts(k) {
         }
     }
     // if (selectPart != ""){
-    if (placedPartSprite != ""){
+    if (placedPartSprite != "") {
         drawSprite({
             sprite: placedPartSprite,
             pos: vec2(Math.round(placedPartPosX / 32) * 32, Math.round(placedPartPosY / 32) * 32),
