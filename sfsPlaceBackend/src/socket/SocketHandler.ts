@@ -141,7 +141,15 @@ export default class SocketHandler {
         // Broadcast status packet every 5 seconds
         // If the client does not receive a ping packet, for awhile they can assume that the server is down/lagging
         setInterval(async () => {
-            this.broadcast(SocketResponse.createResponse(this.pingCount.toString()));
+            let resp = new SocketResponse();
+            resp.message = {
+                op: "PING",
+                payload: {
+                    pingCount: this.pingCount
+                }
+            };
+            
+            this.broadcast(resp);
             this.pingCount += 1;
         }, 10000);
     }
