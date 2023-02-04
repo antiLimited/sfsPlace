@@ -14,9 +14,17 @@ export default class ValidateUserEmailRoute implements ApiRoute {
 
                 resp.message = "Failed to validate user email";
             } else {
-                await Database.validateEmail(ctx.request.body["token"]);
+                let validatedEmail = await Database.validateEmail(ctx.request.body["token"]);
 
-                resp.message = "Verified user email address";
+
+                if (validatedEmail) {
+                    resp.message = "Verified user email address";
+                } else {
+                    resp.message = "Failed to validate email address";
+                    resp.error.errorCode = 4;
+                    resp.error.errorMessage = "Invalid email verification code";
+
+                }
             }
 
             ctx.body = resp;

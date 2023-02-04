@@ -80,8 +80,9 @@ export default class Database {
     }
 
 
-    static async validateEmail(token: string) {
+    static async validateEmail(token: string) : Promise<boolean> {
         let i = 0;
+        let found = false;
         for (let emailToken of this.emailTokens) {
             if (emailToken.token == token) {
 
@@ -92,11 +93,14 @@ export default class Database {
 
                 this.emailTokens.splice(i, 1);
 
+                found = true;
                 break;
             }
 
             i++;
         }
+
+        return found;
     }
 
     static async authUserWithToken(token: string) {
