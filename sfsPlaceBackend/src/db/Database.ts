@@ -3,6 +3,7 @@ import * as Mongoose from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
 import { Logger } from "tslog";
 import { intervalToDuration } from "date-fns";
+import SocketHandler, { SocketResponse } from "../socket/SocketHandler";
 
 export class UserToken {
     public userEmail: string
@@ -146,7 +147,6 @@ export default class Database {
         let total = 0;
 
         for (let timeout of this.timeouts) {
-
             let result = intervalToDuration({
                 start: new Date(timeout.startTime),
                 end: Date.now()
@@ -156,6 +156,17 @@ export default class Database {
                 this.timeouts.splice(i, 1);
                 total++;
             }
+
+            let resp = new SocketResponse();
+            resp.message = {
+                op: "TIMEOUT_UPDATE",
+                payload: {
+                    sinceTimeout: result,
+                    timeoutStart: new Date(timeout.startTime)
+                }
+            };
+
+            SocketHandler.sendMessageToClientWithEmail(timeout.userEmail, resp);
 
             i++;
         }

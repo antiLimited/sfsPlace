@@ -41,7 +41,7 @@ export class SocketClient {
 
     private clientSocket: WebSocket;
     private log: Logger<String> = new Logger();
-    private user: IUser = null;
+    public user: IUser = null;
 
     constructor(socket: WebSocket) {
         socket.on("close", () => {
@@ -150,6 +150,15 @@ export default class SocketHandler {
         this.log.trace("Broadcasting message");
         for (let client of this.clients) {
             client.sendMessage(resp.json());
+        }
+    }
+
+    static sendMessageToClientWithEmail(email: string, resp: SocketResponse){
+        this.log.trace("Sending private message");
+        for (let client of this.clients) {
+            if (client.user != null && client.user.email == email){
+                client.sendMessage(resp.json());
+            }
         }
     }
 }
