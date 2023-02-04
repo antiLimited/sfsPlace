@@ -43,6 +43,10 @@ app.use(serve("public"));
 app.use(cors());
 
 
+setInterval(() => {
+    Database.updateTimeouts();
+}, 1000);
+
 // rate limiting
 
 const db = new Map();

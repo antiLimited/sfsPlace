@@ -2,6 +2,7 @@ import { User } from "../models/User";
 import * as Mongoose from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
 import { Logger } from "tslog";
+import { intervalToDuration } from "date-fns";
 
 export class UserToken {
     public userEmail: string
@@ -22,7 +23,20 @@ export default class Database {
 
     }
 
-    static createEmailValidationToken(userEmail: string) : string {
+    static tokenIsValid(userToken: string): boolean {
+        let hasFound = false;
+
+        for (let token of this.tokens) {
+            if (token.token == userToken) {
+                hasFound = true;
+                break;
+            }
+        }
+
+        return hasFound;
+    }
+
+    static createEmailValidationToken(userEmail: string): string {
         let token = 'SFS-';
 
         for (let i = 0; i < 7; i++) {
@@ -39,7 +53,7 @@ export default class Database {
         return token;
     }
 
-    static createUserToken(userEmail: string) : string {
+    static createUserToken(userEmail: string): string {
         let token = uuidv4();
 
         let userToken: UserToken = {
@@ -64,19 +78,19 @@ export default class Database {
         return query;
     }
 
-    
-    static async validateEmail(token: string){
+
+    static async validateEmail(token: string) {
         let i = 0;
-        for (let emailToken of this.emailTokens){
-            if (emailToken.token == token){
-                
+        for (let emailToken of this.emailTokens) {
+            if (emailToken.token == token) {
+
                 this.log.debug(`Email: ${emailToken.userEmail} is now valid`);
 
                 // issue database update
                 await User.findOneAndUpdate({ email: emailToken.userEmail }, { validatedEmail: true });
 
                 this.emailTokens.splice(i, 1);
-                
+
                 break;
             }
 
@@ -84,9 +98,9 @@ export default class Database {
         }
     }
 
-    static async authUserWithToken(token: string){
-        for (let userToken of this.tokens){
-            if (userToken.token == token){
+    static async authUserWithToken(token: string) {
+        for (let userToken of this.tokens) {
+            if (userToken.token == token) {
 
                 // lookup user in database
                 let user = await this.findUserWithEmail(userToken.userEmail);
@@ -105,14 +119,50 @@ export default class Database {
         this.log.info("Connected to backend database");
     }
 
-    static updateTimeouts(){
-        let i = 0;
+    static addTimeoutForUser(userEmail: string){
+        let timeout = new UserTimeout();
+        timeout.userEmail = userEmail;
+        timeout.startTime = Date.now();
+
+        this.timeouts.push(timeout);
+    }
+
+    static userHasTimeout(userEmail: string){
+        let found = false;
 
         for (let timeout of this.timeouts){
-            let startDate = new Date(timeout.startTime);
+            if (timeout.userEmail == userEmail){
+                found = true;
+                break;
+            }
         }
+
+        return found;
     }
-    
+
+    // Update part placement timeouts
+    static updateTimeouts() {
+        let i = 0;
+        let total = 0;
+
+        for (let timeout of this.timeouts) {
+
+            let result = intervalToDuration({
+                start: new Date(timeout.startTime),
+                end: Date.now()
+            });
+
+            if (result.minutes >= 5){
+                this.timeouts.splice(i, 1);
+                total++;
+            }
+
+            i++;
+        }
+
+        this.log.debug("Removed a total of " + total + " timeouts from memory");
+    }
+
 
     private static tokens: Array<UserToken> = new Array();
     private static emailTokens: Array<UserToken> = new Array();

@@ -28,38 +28,47 @@ export default class PlacePartRoute implements ApiRoute {
 
                     let user = users[0];
 
-                    // less then .1 or higher than 2
-                    if (validate.value.scale > 2 || validate.value.scale < 0.1) {
+                    if (Database.userHasTimeout(user.email)) {
                         resp.message = "Failed to place part";
-                        resp.error.errorCode = 5;
-                        resp.error.errorMessage = "Scale cannot be less than .1 or higher than 2";
+                        resp.error.errorCode = 10;
+                        resp.error.errorMessage = "Place timeout not over";
                     } else {
 
-                        let part: IMapPart = {
-                            placeTime: Date.now(),
-                            name: validate.value.partName,
-                            position: { x: validate.value.partPosition.x, y: validate.value.partPosition.y },
-                            owner: user.username,
-                            rotation: Math.round(validate.value.rotation),
-                            scale: validate.value.scale,
-                            texture: validate.value.texture,
-                            identifier: uuidv4()
+                        // less then .1 or higher than 2
+                        if (validate.value.scale > 2 || validate.value.scale < 0.1) {
+                            resp.message = "Failed to place part";
+                            resp.error.errorCode = 5;
+                            resp.error.errorMessage = "Scale cannot be less than .1 or higher than 2";
+                        } else {
+
+                            let part: IMapPart = {
+                                placeTime: Date.now(),
+                                name: validate.value.partName,
+                                position: { x: validate.value.partPosition.x, y: validate.value.partPosition.y },
+                                owner: user.username,
+                                rotation: Math.round(validate.value.rotation),
+                                scale: validate.value.scale,
+                                texture: validate.value.texture,
+                                identifier: uuidv4()
+                            }
+
+                            MapManager.addPart(part);
+
+                            user.placedParts += 1;
+                            user.save();
+
+                            resp.message = "Placed part";
+
+                            let socketResponse = new SocketResponse();
+                            socketResponse.message = {
+                                op: "PART_PLACED",
+                                part: part
+                            };
+
+                            SocketHandler.broadcast(socketResponse);
+
+                            Database.addTimeoutForUser(user.email);
                         }
-
-                        MapManager.addPart(part);     
-                        
-                        user.placedParts += 1;
-                        user.save();
-
-                        resp.message = "Placed part";
-
-                        let socketResponse = new SocketResponse();
-                        socketResponse.message = {
-                            op: "PART_PLACED",
-                            part: part
-                        };
-                        
-                        SocketHandler.broadcast(socketResponse);
                     }
                 }
             }

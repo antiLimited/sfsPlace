@@ -29,20 +29,26 @@ export default class DeletePartRoute implements ApiRoute {
 
                     let user = users[0];
 
-                    await MapManager.deletePartWithId(validate.value.identifier);
+                    if (Database.userHasTimeout(user.email)) {
+                        resp.error.errorCode = 10;
+                        resp.error.errorMessage = "Place timeout is not over";
+                        resp.message = "Failed to delete part";
+                    } else {
 
-                    resp.message = "Deleted part";
+                        await MapManager.deletePartWithId(validate.value.identifier);
 
+                        resp.message = "Deleted part";
 
+                        let socketResponse = new SocketResponse();
+                        socketResponse.message = {
+                            op: "PART_DELETED",
+                            user: user.username,
+                            partId: validate.value.identifier
+                        };
 
-                    let socketResponse = new SocketResponse();
-                    socketResponse.message = {
-                        op: "PART_DELETED",
-                        user: user.username,
-                        partId: validate.value.identifier
-                    };
-                    
-                    SocketHandler.broadcast(socketResponse);
+                        SocketHandler.broadcast(socketResponse);
+                        Database.addTimeoutForUser(user.email);
+                    }
                 }
             }
 
