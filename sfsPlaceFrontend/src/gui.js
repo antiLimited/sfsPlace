@@ -1,4 +1,5 @@
 import kaboom from "kaboom"
+import * as api from "./api"
 
 async function getPartList() {
     let dataFetch = await fetch("/data/parts.json", {});
@@ -12,12 +13,19 @@ async function getPartList() {
     for (let part in window.parts) {
         loadSprite(window.parts[part].name, window.parts[part].sprite)
     }
+    window.placedParts = await api.getParts()
 })();
 
-var partsPlaced = []
 var hoverPart = ""
 var selectPart = ""
 
+var placedPartSprite = "RCS"
+var placedPartTexture = "no_texture"
+var placedPartPosX = 1
+var placedPartPosY = 1
+var placedPartRot = 0
+var placedPartScaleX = 1
+var placedPartScaleY = 1
 
 export function drawGui(k) {
     drawRect({
@@ -32,7 +40,7 @@ export function drawGui(k) {
 
     drawRect({
         width: k.width() * 0.95,
-        height: k.height() * 0.375,
+        height: k.height() * 0.25,
         pos: toWorld(vec2(k.width() / 2, 0)),
         opacity: 0.5,
         radius: 32,
@@ -133,6 +141,10 @@ export function drawGui(k) {
     var rectPositionPlace = vec2(k.width() * 0.0625, k.height() - 288)
     if (testRectPoint(new Rect(rectPositionPlace, vec2(rectPositionPlace.x + k.width() * 0.375, rectPositionPlace.y + 96)), mousePos())) {
         hoveringPlace = true
+        if (isMousePressed()) {
+            api.placePart(placedPartSprite, placedPartScaleX, placedPartRot, placedPartTexture, placedPartPosX, placedPartPosY)
+            placed
+        }
     }
     drawRect({
         width: k.width() * 0.375,
@@ -186,18 +198,15 @@ export function drawGui(k) {
     })
 }
 
-var placedPartSprite = "RCS"
-var placedPartPosX = 1
-var placedPartPosY = 1
-var placedPartRot = 0
-var placedPartScaleX = 1
-var placedPartScaleY = 1
 
 export function drawPlacedParts(k) {
+    if (window.placedParts == undefined){
+        return;
+    }
     if (isMousePressed("left")) {
         var mouseClickPos = toWorld(mousePos())
         debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
-        if (mousePos().y < k.height() - 128 && selectPart != "") {
+        if (mousePos().y < k.height() - 288 && selectPart != "") {
             placedPartSprite = selectPart
             placedPartPosX = toWorld(mousePos()).x
             placedPartPosY = toWorld(mousePos()).y
@@ -215,12 +224,11 @@ export function drawPlacedParts(k) {
         opacity: 0.5,
         origin: "center"
     })
-    // }
-    // for (let part of partsPlaced) {
-    //     drawSprite({
-    //         sprite: part.sprite,
-    //         pos: vec2(Math.round(part.pos.x / 32) * 32, Math.round(part.pos.y / 32) * 32),
-    //         origin: "center"
-    //     })
-    // }
+    for (let part of window.placedParts) {
+        drawSprite({
+            sprite: part.name,
+            pos: vec2(Math.round(part.position.x / 32) * 32, Math.round(part.position.y / 32) * 32),
+            origin: "center"
+        })
+    }
 }
