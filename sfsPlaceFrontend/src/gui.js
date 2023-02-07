@@ -55,7 +55,7 @@ export function drawGui(k) {
         size: 96,
         font: "sink",
         width: k.width() / 2,
-        pos: toWorld(vec2(k.width() / 2, k.height() * 0.09375)),
+        pos: toWorld(vec2(k.width() / 2, k.height() * 0.0625)),
         origin: "center",
         color: WHITE,
     })
