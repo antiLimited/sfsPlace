@@ -18,6 +18,10 @@ async function getPartList() {
 
 var hoverPart = ""
 var selectPart = ""
+var selectPos = {
+    x: 0,
+    y: 0
+}
 
 var placedPartSprite = "RCS"
 var placedPartTexture = "no_texture"
@@ -49,7 +53,6 @@ export function drawGui(k) {
         origin: "center"
     })
 
-
     drawText({
         text: "sfsPlace",
         size: 96,
@@ -59,6 +62,22 @@ export function drawGui(k) {
         origin: "center",
         color: WHITE,
     })
+
+    drawText({
+        text: "Parts at position X:" + Math.round(selectPos.x / 32) + " Y:" + + Math.round(selectPos.y / 32),
+        size: 24,
+        font: "sink",
+        width: k.width() / 2,
+        pos: toWorld(vec2(k.width() / 2, k.height() * 0.125)),
+        origin: "center",
+        color: WHITE,
+    })
+
+    if (isMousePressed("left")) {
+        selectPos.x = toWorld(mousePos()).x
+        selectPos.y = toWorld(mousePos()).y
+        console.log(selectPos)
+    }
 
     if (window.parts == undefined) {
 
@@ -143,7 +162,6 @@ export function drawGui(k) {
         hoveringPlace = true
         if (isMousePressed()) {
             api.placePart(placedPartSprite, placedPartScaleX, placedPartRot, placedPartTexture, placedPartPosX, placedPartPosY)
-
         }
     }
     drawRect({
