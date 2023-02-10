@@ -73,6 +73,41 @@ export function drawGui(k) {
         color: WHITE,
     })
 
+    for (part in window.placedParts){
+        partObj = window.placedParts[part]
+        indent = 0
+
+        if (Math.round(partObj.position.x / 32) == Math.round(selectPos.x / 32) && Math.round(partObj.position.y / 32) == Math.round(selectPos.y / 32)) {
+            console.log(partObj.owner)
+            debug.log(partObj.owner)
+
+            position = toWorld(vec2(((k.width() + 64) - k.width()) + (indent * 128), 256))
+
+            drawRect({
+                width: 96,
+                height: 96,
+                pos: position,
+                opacity: (() => {
+                    if (hoverPart == part.name) {
+                        return 0.3
+                    } else {
+                        return 0.6
+                    }
+                })(),
+                radius: 16,
+                color: (() => {
+                    if (selectPart == part.name) {
+                        return CYAN
+                    } else {
+                        return BLACK
+                    }
+                })(),
+                outline: { color: BLACK, width: 4 },
+                origin: "center"
+            })
+        }
+    }
+
     if (isMousePressed("left")) {
         selectPos.x = toWorld(mousePos()).x
         selectPos.y = toWorld(mousePos()).y
