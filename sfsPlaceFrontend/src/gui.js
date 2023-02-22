@@ -31,6 +31,13 @@ var placedPartRot = 0
 var placedPartScaleX = 1
 var placedPartScaleY = 1
 
+var arrowFactor = 0
+
+export function addArrowFactor(arrFact) {
+    arrowFactor = arrFact
+    console.log(arrowFactor)
+}
+
 export function drawGui(k) {
     drawRect({
         width: k.width(),
@@ -73,15 +80,15 @@ export function drawGui(k) {
         color: WHITE,
     })
 
-    for (part in window.placedParts){
+    deleteIndent = 0
+    for (part in window.placedParts) {
         partObj = window.placedParts[part]
-        indent = 0
 
         if (Math.round(partObj.position.x / 32) == Math.round(selectPos.x / 32) && Math.round(partObj.position.y / 32) == Math.round(selectPos.y / 32)) {
             console.log(partObj.owner)
             debug.log(partObj.owner)
 
-            position = toWorld(vec2(((k.width() + 64) - k.width()) + (indent * 128), 256))
+            position = toWorld(vec2(128 + (deleteIndent * 256) + (arrowFactor * 16), 256))
 
             drawRect({
                 width: 96,
@@ -105,6 +112,16 @@ export function drawGui(k) {
                 outline: { color: BLACK, width: 4 },
                 origin: "center"
             })
+            drawText({
+                text: partObj.owner,
+                size: 16,
+                font: "sink",
+                width: 256,
+                pos: vec2(position.x + 128, position.y - 16),
+                origin: "center",
+                color: BLACK,
+            })
+            deleteIndent += 1
         }
     }
 
@@ -227,19 +244,19 @@ export function drawGui(k) {
     if (window.placeTimer != undefined) {
         var minutes = 4 - window.placeTimer.sinceTimeout.minutes
         var seconds = 60 - window.placeTimer.sinceTimeout.seconds
-        if (minutes < 0){
+        if (minutes < 0) {
             window.placeTimer = undefined
         }
 
         drawText({
             text: (() => {
-                if (seconds == 60){
+                if (seconds == 60) {
                     seconds = "00"
                     minutes += 1
-                } else if (seconds < 10){
+                } else if (seconds < 10) {
                     seconds = "0" + seconds
                 }
-                return minutes+":"+seconds
+                return minutes + ":" + seconds
             })(),
             size: 64,
             font: "sink",

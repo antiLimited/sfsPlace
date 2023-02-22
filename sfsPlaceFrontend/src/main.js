@@ -1,7 +1,7 @@
 import kaboom from "kaboom"
 import * as api from "./api";
 import { drawGrid } from "./grid";
-import { drawGui, drawPlacedParts } from "./gui";
+import { drawGui, drawPlacedParts, addArrowFactor } from "./gui";
 
 const k = kaboom({
     background: [61, 98, 152]
@@ -15,6 +15,8 @@ camScale(vec2(1, 1))
 var playerPos = vec2(width / 2, height / 2)
 var playerSpeed = 16
 
+var arrowFactor = 0
+
 onKeyDown("w", () => {
     playerPos.y -= playerSpeed
 })
@@ -26,6 +28,16 @@ onKeyDown("s", () => {
 })
 onKeyDown("d", () => {
     playerPos.x += playerSpeed
+})
+onKeyDown("left", () => {
+    //if (arrowFactor > 0){
+        arrowFactor -= 1
+    //}
+})
+onKeyDown("right", () => {
+    //if (arrowFactor < 0){
+      arrowFactor += 1  
+    //}
 })
 
 var preFrameMousePos
@@ -41,6 +53,7 @@ api.handleSocket();
 
 onDraw(() => {
     camPos(playerPos)
+    addArrowFactor(arrowFactor)
     drawGrid(k, width, height, LINE_SPACING)
     drawPlacedParts(k)
     drawGui(k)
