@@ -86,32 +86,42 @@ export function drawGui(k) {
 
         if (Math.round(partObj.position.x / 32) == Math.round(selectPos.x / 32) && Math.round(partObj.position.y / 32) == Math.round(selectPos.y / 32)) {
             console.log(partObj.owner)
-            debug.log(partObj.owner)
 
             position = toWorld(vec2(128 + (deleteIndent * 256) + (arrowFactor * 16), 256))
+            partWH = vec2(0, 0)
+            for (partArrayObj in parts) {
+                if (partObj.name == parts[partArrayObj].name) {
+                    partWH = vec2(parts[partArrayObj].width, parts[partArrayObj].height)
+                }
+            }
+            console.log(partWH)
 
             drawRect({
                 width: 96,
                 height: 96,
                 pos: position,
-                opacity: (() => {
-                    if (hoverPart == part.name) {
-                        return 0.3
-                    } else {
-                        return 0.6
-                    }
-                })(),
+                opacity: 0.6,
                 radius: 16,
-                color: (() => {
-                    if (selectPart == part.name) {
-                        return CYAN
-                    } else {
-                        return BLACK
-                    }
-                })(),
+                color: BLACK,
                 outline: { color: BLACK, width: 4 },
                 origin: "center"
             })
+            if (partWH.x >= partWH.y) {
+                drawSprite({
+                    sprite: partObj.name,
+                    pos: position,
+                    width: 64,
+                    origin: "center"
+                })
+            } else if (partWH.x < partWH.y) {
+                drawSprite({
+                    sprite: partObj.name,
+                    pos: position,
+                    height: 64,
+                    origin: "center"
+                })
+            }
+
             drawText({
                 text: partObj.owner,
                 size: 16,
@@ -291,7 +301,7 @@ export function drawPlacedParts(k) {
     }
     if (isMousePressed("left")) {
         var mouseClickPos = toWorld(mousePos())
-        debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
+        // debug.log(Math.round(mouseClickPos.x / 32) + " " + Math.round(mouseClickPos.y / 32))
         if (mousePos().y < k.height() - 288 && selectPart != "") {
             placedPartSprite = selectPart
             placedPartPosX = toWorld(mousePos()).x
