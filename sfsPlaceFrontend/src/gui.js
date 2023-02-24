@@ -17,6 +17,7 @@ async function getPartList() {
 })();
 
 var hoverPart = ""
+var hoverDelete = ""
 var selectPart = ""
 var selectPos = {
     x: 0,
@@ -35,7 +36,7 @@ var arrowFactor = 0
 
 export function addArrowFactor(arrFact) {
     arrowFactor = arrFact
-    console.log(arrowFactor)
+    // console.log(arrowFactor)
 }
 
 export function drawGui(k) {
@@ -80,12 +81,13 @@ export function drawGui(k) {
         color: WHITE,
     })
 
-    deleteIndent = 0
+    var deleteIndent = 0
+
     for (part in window.placedParts) {
         partObj = window.placedParts[part]
 
         if (Math.round(partObj.position.x / 32) == Math.round(selectPos.x / 32) && Math.round(partObj.position.y / 32) == Math.round(selectPos.y / 32)) {
-            console.log(partObj.owner)
+            // console.log(partObj.owner)
 
             position = toWorld(vec2(128 + (deleteIndent * 256) + (arrowFactor * 16), 256))
             partWH = vec2(0, 0)
@@ -94,7 +96,7 @@ export function drawGui(k) {
                     partWH = vec2(parts[partArrayObj].width, parts[partArrayObj].height)
                 }
             }
-            console.log(partWH)
+            // console.log(partWH)
 
             drawRect({
                 width: 96,
@@ -131,6 +133,33 @@ export function drawGui(k) {
                 origin: "center",
                 color: BLACK,
             })
+
+            var rectPosition = toScreen(vec2(position.x + 64, position.y + 4))
+            if (testRectPoint(new Rect(rectPosition, vec2(rectPosition.x + 128, rectPosition.y + 24)), mousePos())) {
+                hoverDelete = partObj.identifier
+                console.log(hoverDelete)
+                if (isMousePressed("left")) {
+                    api.deletePart(partObj.identifier)
+                }
+            } else {
+                hoverDelete = ""
+            }
+            drawRect({
+                width: 128,
+                height: 24,
+                pos: vec2(position.x + 128, position.y + 16),
+                opacity: (() => {
+                    if (hoverDelete == partObj.identifier) {
+                        return 0.3
+                    } else {
+                        return 0.6
+                    }
+                })(),
+                radius: 16,
+                color: RED,
+                outline: { color: BLACK, width: 4 },
+                origin: "center"
+            })
             deleteIndent += 1
         }
     }
@@ -138,7 +167,7 @@ export function drawGui(k) {
     if (isMousePressed("left")) {
         selectPos.x = toWorld(mousePos()).x
         selectPos.y = toWorld(mousePos()).y
-        console.log(selectPos)
+        // console.log(selectPos)
     }
 
     if (window.parts == undefined) {

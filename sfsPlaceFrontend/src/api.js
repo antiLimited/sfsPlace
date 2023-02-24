@@ -105,3 +105,22 @@ export async function placePart(name, scale, rotation, texture, partX, partY) {
 
     return partFetchJson;
 }
+
+export async function deletePart(partId) {
+    var partFetch = await fetch(`${apiUrl}/api/v1/map/deletePart`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": getLocalUserToken()
+        },
+        body: JSON.stringify({
+            "identifier": partId
+        })
+    })
+
+    let partFetchJson = await partFetch.json();
+
+    if (partFetchJson.error.errorCode != -1) {
+        alert("Cannot delete part: " + partFetchJson.error.errorMessage);
+    }
+}
